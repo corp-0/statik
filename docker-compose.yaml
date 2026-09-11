@@ -1,0 +1,10 @@
+services:
+  statik:
+    image: ghcr.io/corp-0/statik:latest
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "${STATIK_PORT:-8080}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: "8080"
