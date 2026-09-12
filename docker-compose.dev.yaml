@@ -1,0 +1,32 @@
+name: statik-dev
+
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: statik
+      POSTGRES_USER: statik
+      POSTGRES_HOST_AUTH_METHOD: trust
+    # Use the same authentication rules for new and existing database volumes.
+    command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
+    configs:
+      - source: postgres-auth
+        target: /etc/postgresql/pg_hba.conf
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U statik -d statik"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+configs:
+  postgres-auth:
+    content: |
+      local all all trust
+      host all all all trust
+
+volumes:
+  postgres-data:

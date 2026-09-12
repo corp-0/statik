@@ -8,3 +8,58 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__Statik: "Host=statik-db;Port=5432;Database=statik;Username=statik"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - default
+      - database
+
+  migrate:
+    image: ghcr.io/corp-0/statik:latest
+    pull_policy: always
+    command: ["migrate"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Statik: "Host=statik-db;Port=5432;Database=statik;Username=statik"
+    depends_on:
+      statik-db:
+        condition: service_healthy
+    networks:
+      - database
+
+  statik-db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: statik
+      POSTGRES_USER: statik
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: ["postgres", "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
+    configs:
+      - source: postgres-auth
+        target: /etc/postgresql/pg_hba.conf
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U statik -d statik"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+configs:
+  postgres-auth:
+    content: |
+      local all all trust
+      host all all all trust
+
+networks:
+  default:
+  database:
+    internal: true
+
+volumes:
+  postgres-data:
