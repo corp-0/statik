@@ -2,15 +2,16 @@ using Microsoft.AspNetCore.Identity;
 using Statik.Server.Data;
 using Statik.Server.Models;
 using Statik.Server.Rendering;
+using Statik.Server.Hosting;
 
 namespace Statik.Server.Endpoints;
 
 public static class UserPageEndpoints
 {
-    public static void MapUserPageEndpoints(this IEndpointRouteBuilder endpoints)
+    public static void MapUserPageEndpoints(this IEndpointRouteBuilder endpoints, SiteOrigins sites)
     {
         endpoints.MapGet("/{username}", GetUserPage)
-            .RequireHost("statik.club", "localhost", "127.0.0.1");
+            .RequireHost(sites.Public.Host);
     }
 
     private static async Task<IResult> GetUserPage(string username, UserManager<User> manager,

@@ -11,7 +11,7 @@ public static class CreatePageCommand
     {
         if (args.Length > 2)
         {
-            await Console.Error.WriteLineAsync("Usage: dotnet run --project src/Statik.Server -- create-page [username]");
+            await Console.Error.WriteLineAsync(ConsoleCommands.Usage("create-page"));
             return 1;
         }
 

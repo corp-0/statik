@@ -10,7 +10,7 @@ public class StatikUserValidator : IUserValidator<User>
 
     private static readonly HashSet<string> ReservedUserNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "about", "privacy", "terms", "api", "assets", "health", "admin", "staff", "gilles"
+        "about", "privacy", "terms", "api", "assets", "health", "admin", "staff"
     };
 
     public async Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user)

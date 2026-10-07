@@ -11,6 +11,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statik.Server.Tests", "tests\Statik.Server.Tests\Statik.Server.Tests.csproj", "{EDB1670B-1A3A-4297-A013-065785D8C25B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Statik.Web", "Statik.Web", "{9BC00B2E-A0DD-480C-BA1B-D67FACBBF2FC}"
+	ProjectSection(SolutionItems) = preProject
+		src\Statik.Web\.env.development = src\Statik.Web\.env.development
+		src\Statik.Web\.env.production = src\Statik.Web\.env.production
+		src\Statik.Web\index.html = src\Statik.Web\index.html
+		src\Statik.Web\package-lock.json = src\Statik.Web\package-lock.json
+		src\Statik.Web\package.json = src\Statik.Web\package.json
+		src\Statik.Web\tsconfig.json = src\Statik.Web\tsconfig.json
+		src\Statik.Web\vite.config.ts = src\Statik.Web\vite.config.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1A3B182C-743E-4775-9009-E3B9C121E6FD}"
+	ProjectSection(SolutionItems) = preProject
+		src\Statik.Web\src\AccountRecovery.tsx = src\Statik.Web\src\AccountRecovery.tsx
+		src\Statik.Web\src\AdminUsers.tsx = src\Statik.Web\src\AdminUsers.tsx
+		src\Statik.Web\src\App.tsx = src\Statik.Web\src\App.tsx
+		src\Statik.Web\src\AuthForm.tsx = src\Statik.Web\src\AuthForm.tsx
+		src\Statik.Web\src\CodeEditor.tsx = src\Statik.Web\src\CodeEditor.tsx
+		src\Statik.Web\src\Editor.tsx = src\Statik.Web\src\Editor.tsx
+		src\Statik.Web\src\api.ts = src\Statik.Web\src\api.ts
+		src\Statik.Web\src\main.tsx = src\Statik.Web\src\main.tsx
+		src\Statik.Web\src\sites.ts = src\Statik.Web\src\sites.ts
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +74,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{9BC00B2E-A0DD-480C-BA1B-D67FACBBF2FC} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{1A3B182C-743E-4775-9009-E3B9C121E6FD} = {9BC00B2E-A0DD-480C-BA1B-D67FACBBF2FC}
 		{2E3E784C-AE3A-46A9-B31E-4B0D1F71C272} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{EDB1670B-1A3A-4297-A013-065785D8C25B} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection

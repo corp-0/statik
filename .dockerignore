@@ -6,4 +6,9 @@
 artifacts
 .env
 .env.*
+**/.env
+**/.env.*
+!src/Statik.Web/.env.development
+!src/Statik.Web/.env.production
+.certs
 **/*.log

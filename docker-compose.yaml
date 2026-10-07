@@ -3,30 +3,26 @@ services:
     image: ghcr.io/corp-0/statik:latest
     pull_policy: always
     restart: unless-stopped
-    ports:
-      - "${STATIK_PORT:-8080}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: "8080"
+      # Trust X-Forwarded-For/Proto only from the shared cloudflared's fixed address on the tunnel network.
+      ForwardedHeaders__KnownProxies__0: 10.213.0.2
       ConnectionStrings__Statik: "Host=statik-db;Port=5432;Database=statik;Username=statik"
-    depends_on:
-      migrate:
-        condition: service_completed_successfully
-    networks:
-      - default
-      - database
-
-  migrate:
-    image: ghcr.io/corp-0/statik:latest
-    pull_policy: always
-    command: ["migrate"]
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__Statik: "Host=statik-db;Port=5432;Database=statik;Username=statik"
+      Smtp__Host: smtp.resend.com
+      Smtp__Port: "587"
+      Smtp__Security: StartTls
+      Smtp__Username: resend
+      Smtp__Password: "${RESEND_API_KEY:?Set RESEND_API_KEY in the deployment .env file}"
+      Smtp__From: "${STATIK_EMAIL_FROM:-Statik <noreply@statik.club>}"
+    labels:
+      # Watchtower pulls new :latest images and replaces this container; the app migrates on startup.
+      com.centurylinklabs.watchtower.enable: "true"
     depends_on:
       statik-db:
         condition: service_healthy
     networks:
+      - tunnel
       - database
 
   statik-db:
@@ -57,7 +53,10 @@ configs:
       host all all all trust
 
 networks:
-  default:
+  # Shared with the standalone cloudflared stack, which has the fixed address 10.213.0.2.
+  # Created once on the host: docker network create --subnet 10.213.0.0/24 tunnel
+  tunnel:
+    external: true
   database:
     internal: true
 

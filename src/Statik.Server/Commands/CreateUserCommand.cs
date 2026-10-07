@@ -10,7 +10,7 @@ public static class CreateUserCommand
     {
         if (args.Length > 2)
         {
-            await Console.Error.WriteLineAsync("Usage: dotnet run --project src/Statik.Server -- create-user [username]");
+            await Console.Error.WriteLineAsync(ConsoleCommands.Usage("create-user"));
             return 1;
         }
 
@@ -25,9 +25,19 @@ public static class CreateUserCommand
         }
 
         var displayName = ConsolePrompts.ReadRequired("Display name");
+        var email = ConsolePrompts.ReadRequired("Email");
+        if (!new EmailAddressAttribute().IsValid(email))
+        {
+            await Console.Error.WriteLineAsync($"'{email}' is not a valid email address.");
+            return 1;
+        }
+
         var user = new User
         {
             UserName = username,
+            Email = email,
+            // Created by an operator, so the email counts as confirmed.
+            EmailConfirmed = true,
             DisplayName = displayName,
             About = ConsolePrompts.Read("About (optional)")
         };
@@ -43,20 +53,7 @@ public static class CreateUserCommand
             return 1;
         }
 
-        string password;
-        while (true)
-        {
-            password = ConsolePrompts.ReadPassword("Password");
-            var confirmation = ConsolePrompts.ReadPassword("Confirm password");
-            if (password.Length > 0 && password == confirmation)
-            {
-                break;
-            }
-
-            await Console.Error.WriteLineAsync("Passwords must be nonempty and match. Try again.");
-        }
-
-        var result = await userManager.CreateAsync(user, password);
+        var result = await userManager.CreateAsync(user, ConsolePrompts.ReadNewPassword());
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)

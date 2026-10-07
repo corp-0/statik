@@ -1,16 +1,32 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { readFileSync } from 'node:fs';
 
-export default defineConfig({
+const backend = { target: 'http://localhost:5080', xfwd: true };
+
+export default defineConfig(({ command }) => ({
   plugins: [react()],
   server: {
+    host: '127.0.0.1',
     port: 5173,
     strictPort: true,
+    allowedHosts: ['statik.dev', 'app.statik.dev'],
+    https: command === 'serve' ? {
+      key: readFileSync(new URL('../../.certs/statik-dev.key', import.meta.url)),
+      cert: readFileSync(new URL('../../.certs/statik-dev.crt', import.meta.url)),
+    } : undefined,
     proxy: {
-      '/api': 'http://localhost:5080',
-      '/health': 'http://localhost:5080',
-      // Public profile paths belong to ASP.NET keep Vite's asset URLs local.
-      '^/[a-zA-Z0-9_-]+/?(?:\\?.*)?$': 'http://localhost:5080',
+      '/api': backend,
+      '/health': backend,
+      '/admin': backend,
+      '/_content': backend,
+      '^/[a-zA-Z0-9_-]+/?(?:\\?.*)?$': {
+        ...backend,
+        bypass(request) {
+          const authority = request.headers[':authority'] ?? request.headers.host;
+          if (typeof authority !== 'string' || authority.split(':')[0].toLowerCase() !== 'statik.dev') return request.url;
+        },
+      },
     },
   },
-});
+}));

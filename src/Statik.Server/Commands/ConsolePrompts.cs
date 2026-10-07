@@ -7,7 +7,7 @@ public static class ConsolePrompts
     public static string Read(string label)
     {
         Console.Write($"{label}: ");
-        return Console.ReadLine() ?? throw new OperationCanceledException("Input ended; nothing was saved.");
+        return Console.ReadLine() ?? throw new OperationCanceledException("Input ended, nothing was saved.");
     }
 
     public static string ReadRequired(string label)
@@ -51,12 +51,27 @@ public static class ConsolePrompts
             }
             else if (key.Key == ConsoleKey.Escape || key.KeyChar == '\u0004')
             {
-                throw new OperationCanceledException("Cancelled; nothing was saved.");
+                throw new OperationCanceledException("Cancelled, nothing was saved.");
             }
             else if (!char.IsControl(key.KeyChar))
             {
                 password.Append(key.KeyChar);
             }
+        }
+    }
+
+    public static string ReadNewPassword()
+    {
+        while (true)
+        {
+            var password = ReadPassword("Password");
+            var confirmation = ReadPassword("Confirm password");
+            if (password.Length > 0 && password == confirmation)
+            {
+                return password;
+            }
+
+            Console.Error.WriteLine("Passwords must be nonempty and match. Try again.");
         }
     }
 

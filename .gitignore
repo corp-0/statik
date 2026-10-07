@@ -10,5 +10,8 @@ artifacts/
 *.log
 .DS_Store
 .env
+.certs/
 .env.*
 !.env.example
+!/src/Statik.Web/.env.development
+!/src/Statik.Web/.env.production

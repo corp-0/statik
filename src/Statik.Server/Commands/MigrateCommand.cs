@@ -10,7 +10,7 @@ public static class MigrateCommand
     {
         if (args.Length != 1)
         {
-            await Console.Error.WriteLineAsync("Usage: dotnet run --project src/Statik.Server -- migrate");
+            await Console.Error.WriteLineAsync(ConsoleCommands.Usage("migrate"));
             return 1;
         }
 

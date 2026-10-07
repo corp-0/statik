@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Local management commands, e.g. ./statik list-users. Run ./statik help for the list.
+set -euo pipefail
+exec dotnet run --project "$(dirname -- "${BASH_SOURCE[0]}")/src/Statik.Server" -- "$@"

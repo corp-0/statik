@@ -16,6 +16,9 @@ COPY --from=web-build /src/web/dist/ /app/wwwroot/
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=server-build /app/ ./
+# Management commands: docker compose exec statik statik list-users
+RUN printf '#!/bin/sh\nexec dotnet /app/Statik.Server.dll "$@"\n' > /usr/local/bin/statik \
+    && chmod 755 /usr/local/bin/statik
 USER $APP_UID
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "Statik.Server.dll"]

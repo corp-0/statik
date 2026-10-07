@@ -10,6 +10,7 @@ using Statik.Server.Data;
 using Statik.Server.Endpoints;
 using Statik.Server.Models;
 using Statik.Server.Rendering;
+using Statik.Server.Hosting;
 
 namespace Statik.Server.Tests;
 
@@ -25,6 +26,7 @@ public class UserPageEndpointTests
         using var server = CreateServer();
         await SeedPage(server, body);
         using var client = server.GetTestClient();
+        client.BaseAddress = new Uri("https://statik.club");
 
         using var response = await client.GetAsync("/gilles");
         var text = await response.Content.ReadAsStringAsync();
@@ -68,6 +70,7 @@ public class UserPageEndpointTests
             await SeedPage(server, null);
         }
         using var client = server.GetTestClient();
+        client.BaseAddress = new Uri("https://statik.club");
 
         using var response = await client.GetAsync("/gilles");
 
@@ -80,6 +83,7 @@ public class UserPageEndpointTests
         using var server = CreateServer();
         await SeedPage(server, "<main>Hello</main>");
         using var client = server.GetTestClient();
+        client.BaseAddress = new Uri("https://statik.club");
         client.BaseAddress = new Uri("https://app.statik.club");
 
         using var response = await client.GetAsync("/gilles");
@@ -102,7 +106,7 @@ public class UserPageEndpointTests
             .Configure(app =>
             {
                 app.UseRouting();
-                app.UseEndpoints(endpoints => endpoints.MapUserPageEndpoints());
+                app.UseEndpoints(endpoints => endpoints.MapUserPageEndpoints(new SiteOrigins { Public = new Uri("https://statik.club"), App = new Uri("https://app.statik.club") }));
             })).Start();
     }
 
